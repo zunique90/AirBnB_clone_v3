@@ -11,6 +11,11 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return {"error": "Not found"}
+
+
 @app.teardown_appcontext
 def clean_up(exception):
     """Closes the database connection before teardown"""
