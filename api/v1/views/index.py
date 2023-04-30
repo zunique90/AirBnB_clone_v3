@@ -10,6 +10,7 @@ from models.state import State
 from models.user import User
 from models.amenity import Amenity
 
+
 @app_views.route('/status')
 def status():
     """Returns the status of the API"""
@@ -19,8 +20,6 @@ def status():
 @app_views.route('/stats')
 def stats():
     """Return number of each objects in storage"""
-    objs = storage.all()
-    print(objs)
     obj = {
         "amenities": storage.count(Amenity),
         "cities": storage.count(City),
