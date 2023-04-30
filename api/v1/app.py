@@ -13,6 +13,7 @@ app.register_blueprint(app_views)
 
 @app.teardown_appcontext
 def clean_up(exception):
+    """Closes the database connection before teardown"""
     storage.close()
 
 
