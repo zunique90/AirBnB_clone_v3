@@ -1,25 +1,25 @@
 #!/usr/bin/python3
-"""Route handlers for the State entity"""
+"""Route handlers for the Amenity entity"""
 
 from api.v1.views import app_views
-from models.state import State
+from models.amenity import Amenity
 from models import storage
 from flask import abort, request
 from werkzeug.exceptions import BadRequest
 
-cls = State
+cls = Amenity
 
 
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
-def get_all():
-    """Get all states"""
+@app_views.route('/amenities', methods=['GET'], strict_slashes=False)
+def get_all_amenity():
+    """Get all amenities"""
     obj = storage.all(cls)
     return [v.to_dict() for v in obj.values()]
 
 
-@app_views.route('/states', methods=['POST'], strict_slashes=False)
-def create():
-    """create a new state"""
+@app_views.route('/amenities', methods=['POST'], strict_slashes=False)
+def create_amenity():
+    """create a new amenity"""
     try:
         body = request.get_json()
         if 'name' not in body:
@@ -33,19 +33,19 @@ def create():
         abort(400, 'Missing name')
 
 
-@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
-def get(state_id):
-    """Get a state by ID"""
-    obj = storage.get(cls, state_id)
+@app_views.route('/amenities/<amenity_id>', methods=['GET'], strict_slashes=False)
+def get_amenity(amenity_id):
+    """Get an amenity by ID"""
+    obj = storage.get(cls, amenity_id)
     if obj is None:
         return abort(404)
     return obj.to_dict()
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
-def delete(state_id):
-    """Delete a state"""
-    obj = storage.get(cls, state_id)
+@app_views.route('/amenities/<amenity_id>', methods=['DELETE'], strict_slashes=False)
+def delete_amenity(amenity_id):
+    """Delete an amenity"""
+    obj = storage.get(cls, amenity_id)
     if obj is None:
         return abort(404)
     storage.delete(obj)
@@ -53,10 +53,10 @@ def delete(state_id):
     return {}
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
-def update(state_id):
-    """Update a state"""
-    obj = storage.get(cls, state_id)
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'], strict_slashes=False)
+def update_amenity(amenity_id):
+    """Update an amenity"""
+    obj = storage.get(cls, amenity_id)
     if obj is None:
         return abort(404)
     try:

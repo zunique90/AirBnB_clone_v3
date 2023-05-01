@@ -1,25 +1,25 @@
 #!/usr/bin/python3
-"""Route handlers for the State entity"""
+"""Route handlers for the City entity"""
 
 from api.v1.views import app_views
-from models.state import State
+from models.city import City
 from models import storage
 from flask import abort, request
 from werkzeug.exceptions import BadRequest
 
-cls = State
+cls = City
 
 
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
-def get_all():
-    """Get all states"""
+@app_views.route('/cities', methods=['GET'], strict_slashes=False)
+def get_all_city():
+    """Gets all cities"""
     obj = storage.all(cls)
     return [v.to_dict() for v in obj.values()]
 
 
-@app_views.route('/states', methods=['POST'], strict_slashes=False)
-def create():
-    """create a new state"""
+@app_views.route('/cities', methods=['POST'], strict_slashes=False)
+def create_city():
+    """create a new city"""
     try:
         body = request.get_json()
         if 'name' not in body:
@@ -33,19 +33,19 @@ def create():
         abort(400, 'Missing name')
 
 
-@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
-def get(state_id):
-    """Get a state by ID"""
-    obj = storage.get(cls, state_id)
+@app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
+def get_city(city_id):
+    """Get a city by ID"""
+    obj = storage.get(cls, city_id)
     if obj is None:
         return abort(404)
     return obj.to_dict()
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
-def delete(state_id):
-    """Delete a state"""
-    obj = storage.get(cls, state_id)
+@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
+def delete_city(city_id):
+    """Delete a city"""
+    obj = storage.get(cls, city_id)
     if obj is None:
         return abort(404)
     storage.delete(obj)
@@ -53,10 +53,10 @@ def delete(state_id):
     return {}
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
-def update(state_id):
-    """Update a state"""
-    obj = storage.get(cls, state_id)
+@app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
+def update_city(city_id):
+    """Update a city"""
+    obj = storage.get(cls, city_id)
     if obj is None:
         return abort(404)
     try:
