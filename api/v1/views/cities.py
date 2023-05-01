@@ -10,14 +10,14 @@ from werkzeug.exceptions import BadRequest
 cls = City
 
 
-@app_views.route('/cities', methods=['GET'])
+@app_views.route('/cities', methods=['GET'], strict_slashes=False)
 def get_all_city():
     """Gets all cities"""
     obj = storage.all(cls)
     return [v.to_dict() for v in obj.values()]
 
 
-@app_views.route('/cities', methods=['POST'])
+@app_views.route('/cities', methods=['POST'], strict_slashes=False)
 def create_city():
     """create a new city"""
     try:
@@ -33,7 +33,7 @@ def create_city():
         abort(400, 'Missing name')
 
 
-@app_views.route('/cities/<city_id>', methods=['GET'])
+@app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
 def get_city(city_id):
     """Get a city by ID"""
     obj = storage.get(cls, city_id)
@@ -42,7 +42,7 @@ def get_city(city_id):
     return obj.to_dict()
 
 
-@app_views.route('/cities/<city_id>', methods=['DELETE'])
+@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
 def delete_city(city_id):
     """Delete a city"""
     obj = storage.get(cls, city_id)
@@ -53,7 +53,7 @@ def delete_city(city_id):
     return {}
 
 
-@app_views.route('/cities/<city_id>', methods=['PUT'])
+@app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
 def update_city(city_id):
     """Update a city"""
     obj = storage.get(cls, city_id)

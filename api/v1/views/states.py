@@ -10,14 +10,14 @@ from werkzeug.exceptions import BadRequest
 cls = State
 
 
-@app_views.route('/states', methods=['GET'])
+@app_views.route('/states', methods=['GET'], strict_slashes=False)
 def get_all():
     """Get all states"""
     obj = storage.all(cls)
     return [v.to_dict() for v in obj.values()]
 
 
-@app_views.route('/states', methods=['POST'])
+@app_views.route('/states', methods=['POST'], strict_slashes=False)
 def create():
     """create a new state"""
     try:
@@ -33,7 +33,7 @@ def create():
         abort(400, 'Missing name')
 
 
-@app_views.route('/states/<state_id>', methods=['GET'])
+@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get(state_id):
     """Get a state by ID"""
     obj = storage.get(cls, state_id)
@@ -42,7 +42,7 @@ def get(state_id):
     return obj.to_dict()
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'])
+@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
 def delete(state_id):
     """Delete a state"""
     obj = storage.get(cls, state_id)
@@ -53,7 +53,7 @@ def delete(state_id):
     return {}
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'])
+@app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def update(state_id):
     """Update a state"""
     obj = storage.get(cls, state_id)
