@@ -13,7 +13,7 @@ IGNORE_LIST = ['id', 'updated_at', 'created_at']
 
 def clean(attr_dict, obj):
     """Just makes sure that keys from IGNORE_LIST are not being set"""
-    return {k: v for k,v in attr_dict.items() if k not in IGNORE_LIST}
+    return {k: v for k, v in attr_dict.items() if k not in IGNORE_LIST}
 
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
@@ -21,7 +21,7 @@ def get_all():
     """Get all states"""
     obj = storage.all(cls)
     parsed = [v.to_dict() for v in obj.values()]
-    return jsonify(parsed)
+    return jsonify(parsed), 200
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
@@ -49,7 +49,7 @@ def get(state_id):
     obj = storage.get(cls, state_id)
     if obj is None:
         return abort(404)
-    return jsonify(obj.to_dict())
+    return jsonify(obj.to_dict()), 200
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
@@ -61,7 +61,7 @@ def delete(state_id):
         return abort(404)
     storage.delete(obj)
     storage.save()
-    return jsonify({})
+    return jsonify({}), 200
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
@@ -81,4 +81,4 @@ def update(state_id):
         obj.save()
     except BadRequest as e:
         abort(400, 'Not a JSON')
-    return jsonify(obj.to_dict())
+    return jsonify(obj.to_dict()), 200

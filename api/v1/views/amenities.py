@@ -13,8 +13,7 @@ IGNORE_LIST = ['id', 'updated_at', 'created_at']
 
 def clean(attr_dict):
     """Just makes sure that keys from IGNORE_LIST are not being set"""
-    return {k: v for k,v in attr_dict.items() if k not in IGNORE_LIST}
-
+    return {k: v for k, v in attr_dict.items() if k not in IGNORE_LIST}
 
 
 @app_views.route('/amenities', methods=['GET'], strict_slashes=False)
