@@ -4,17 +4,24 @@
 from api.v1.views import app_views
 from models.amenity import Amenity
 from models import storage
-from flask import abort, request
+from flask import abort, request, jsonify
 from werkzeug.exceptions import BadRequest
 
 cls = Amenity
+IGNORE_LIST = ['id', 'updated_at', 'created_at']
+
+
+def clean(attr_dict):
+    """Just makes sure that keys from IGNORE_LIST are not being set"""
+    return {k: v for k,v in attr_dict.items() if k not in IGNORE_LIST}
+
 
 
 @app_views.route('/amenities', methods=['GET'], strict_slashes=False)
 def get_all_amenity():
     """Get all amenities"""
     obj = storage.all(cls)
-    return [v.to_dict() for v in obj.values()]
+    return jsonify([v.to_dict() for v in obj.values()]), 200
 
 
 @app_views.route('/amenities', methods=['POST'], strict_slashes=False)
@@ -22,13 +29,14 @@ def create_amenity():
     """create a new amenity"""
     try:
         body = request.get_json()
+        body = clean(body)
         if type(body) is not dict:
             raise BadRequest()
         if 'name' not in body:
             raise KeyError()
         obj = cls(**body)
         obj.save()
-        return obj.to_dict(), 201
+        return jsonify(obj.to_dict()), 201
     except BadRequest as e:
         abort(400, 'Not a JSON')
     except KeyError as e:
@@ -42,7 +50,7 @@ def get_amenity(amenity_id):
     obj = storage.get(cls, amenity_id)
     if obj is None:
         return abort(404)
-    return obj.to_dict()
+    return jsonify(obj.to_dict()), 200
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['DELETE'],
@@ -54,7 +62,7 @@ def delete_amenity(amenity_id):
         return abort(404)
     storage.delete(obj)
     storage.save()
-    return {}
+    return jsonify({}), 200
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'],
@@ -67,13 +75,12 @@ def update_amenity(amenity_id):
     try:
         IGNORE_LIST = ['id', 'updated_at', 'created_at']
         body = request.get_json()
+        body = clean(body)
         if type(body) is not dict:
             raise BadRequest()
         for key, value in body.items():
-            if key in IGNORE_LIST:
-                continue
             setattr(obj, key, value)
         obj.save()
     except BadRequest as e:
         abort(400, 'Not a JSON')
-    return obj.to_dict()
+    return jsonify(obj.to_dict()), 200

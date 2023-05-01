@@ -8,6 +8,12 @@ from flask import abort, request, jsonify
 from werkzeug.exceptions import BadRequest
 
 cls = State
+IGNORE_LIST = ['id', 'updated_at', 'created_at']
+
+
+def clean(attr_dict, obj):
+    """Just makes sure that keys from IGNORE_LIST are not being set"""
+    return {k: v for k,v in attr_dict.items() if k not in IGNORE_LIST}
 
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
@@ -23,6 +29,7 @@ def create():
     """create a new state"""
     try:
         body = request.get_json()
+        body = clean(body)
         if type(body) is not dict:
             raise BadRequest()
         if 'name' not in body:
@@ -64,9 +71,10 @@ def update(state_id):
     if obj is None:
         return abort(404)
     try:
-        IGNORE_LIST = ['id', 'updated_at', 'created_at']
         body = request.get_json()
+        body = clean(body)
         for key, value in body.items():
+            print(key in IGNORE_LIST)
             if key in IGNORE_LIST:
                 continue
             setattr(obj, key, value)
