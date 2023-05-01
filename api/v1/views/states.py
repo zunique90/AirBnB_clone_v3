@@ -5,7 +5,6 @@ from api.v1.views import app_views
 from models.state import State
 from models import storage
 from flask import abort, request, jsonify
-from werkzeug.exceptions import BadRequest
 
 cls = State
 IGNORE_LIST = ['id', 'updated_at', 'created_at']
@@ -24,9 +23,9 @@ def create():
     """create a new state"""
     body = request.get_json()
     if body is None:
-        abort(400, "Not a JSON")
-    if body.get("name") is None:
-        abort(400 "Missing name")
+        abort(400, 'Not a JSON')
+    if body.get('name') is None:
+        abort(400, 'Missing name')
     obj = cls(**body)
     obj.save()
     return jsonify(obj.to_dict()), 201
@@ -37,7 +36,7 @@ def get(state_id):
     """Get a state by ID"""
     obj = storage.get(cls, state_id)
     if obj is None:
-        abort(404, "Not found")
+        abort(404, 'Not found')
     return jsonify(obj.to_dict())
 
 
@@ -47,7 +46,7 @@ def delete(state_id):
     """Delete a state"""
     obj = storage.get(cls, state_id)
     if obj is None:
-        abort(404, "Not found")
+        abort(404, 'Not found')
     obj.delete()
     del obj
     return jsonify({}), 200
@@ -58,8 +57,8 @@ def update(state_id):
     """Update a state"""
     obj = storage.get(cls, state_id)
     if obj is None:
-        abort(404, "Not found")
+        abort(404, 'Not found')
     body = request.get_json()
     if body is None:
-        abort(400, "Not a JSON")
+        abort(400, 'Not a JSON')
     return jsonify(obj.to_dict()), 200
