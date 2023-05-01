@@ -42,7 +42,8 @@ def get(state_id):
     return obj.to_dict()
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/states/<state_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete(state_id):
     """Delete a state"""
     obj = storage.get(cls, state_id)

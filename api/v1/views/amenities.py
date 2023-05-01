@@ -33,7 +33,8 @@ def create_amenity():
         abort(400, 'Missing name')
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['GET'], strict_slashes=False)
+@app_views.route('/amenities/<amenity_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_amenity(amenity_id):
     """Get an amenity by ID"""
     obj = storage.get(cls, amenity_id)
@@ -42,7 +43,8 @@ def get_amenity(amenity_id):
     return obj.to_dict()
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['DELETE'], strict_slashes=False)
+@app_views.route('/amenities/<amenity_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_amenity(amenity_id):
     """Delete an amenity"""
     obj = storage.get(cls, amenity_id)
@@ -53,7 +55,8 @@ def delete_amenity(amenity_id):
     return {}
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['PUT'], strict_slashes=False)
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'],
+                 strict_slashes=False)
 def update_amenity(amenity_id):
     """Update an amenity"""
     obj = storage.get(cls, amenity_id)
