@@ -4,7 +4,7 @@
 from api.v1.views import app_views
 from models.state import State
 from models import storage
-from flask import abort, request
+from flask import abort, request, jsonify
 from werkzeug.exceptions import BadRequest
 
 cls = State
@@ -14,7 +14,8 @@ cls = State
 def get_all():
     """Get all states"""
     obj = storage.all(cls)
-    return [v.to_dict() for v in obj.values()]
+    parsed = [v.to_dict() for v in obj.values()]
+    return jsonify(parsed)
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
@@ -26,7 +27,7 @@ def create():
             raise KeyError()
         obj = cls(**body)
         obj.save()
-        return obj.to_dict(), 201
+        return jsonify(obj.to_dict()), 201
     except BadRequest as e:
         abort(400, 'Not a JSON')
     except KeyError as e:
@@ -39,7 +40,7 @@ def get(state_id):
     obj = storage.get(cls, state_id)
     if obj is None:
         return abort(404)
-    return obj.to_dict()
+    return jsonify(obj.to_dict())
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
@@ -51,7 +52,7 @@ def delete(state_id):
         return abort(404)
     storage.delete(obj)
     storage.save()
-    return {}
+    return jsonify({})
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
@@ -70,4 +71,4 @@ def update(state_id):
         obj.save()
     except BadRequest as e:
         abort(400, 'Not a JSON')
-    return obj.to_dict()
+    return jsonify(obj.to_dict())
