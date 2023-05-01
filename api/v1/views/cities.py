@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-"""Route handlers for the State entity"""
+"""Route handlers for the City entity"""
 
 from api.v1.views import app_views
-from models.state import City
+from models.city import City
 from models import storage
 from flask import abort, request
 from werkzeug.exceptions import BadRequest
@@ -12,14 +12,14 @@ cls = City
 
 @app_views.route('/cities', methods=['GET'])
 def get_all_city():
-    """Get all states"""
+    """Gets all cities"""
     obj = storage.all(cls)
     return [v.to_dict() for v in obj.values()]
 
 
 @app_views.route('/cities', methods=['POST'])
 def create_city():
-    """create a new state"""
+    """create a new city"""
     try:
         body = request.get_json()
         if 'name' not in body:
@@ -35,7 +35,7 @@ def create_city():
 
 @app_views.route('/cities/<city_id>', methods=['GET'])
 def get_city(city_id):
-    """Get a state by ID"""
+    """Get a city by ID"""
     obj = storage.get(cls, city_id)
     if obj is None:
         return abort(404)
@@ -44,7 +44,7 @@ def get_city(city_id):
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'])
 def delete_city(city_id):
-    """Delete a state"""
+    """Delete a city"""
     obj = storage.get(cls, city_id)
     if obj is None:
         return abort(404)
@@ -55,7 +55,7 @@ def delete_city(city_id):
 
 @app_views.route('/cities/<city_id>', methods=['PUT'])
 def update_city(city_id):
-    """Update a state"""
+    """Update a city"""
     obj = storage.get(cls, city_id)
     if obj is None:
         return abort(404)
