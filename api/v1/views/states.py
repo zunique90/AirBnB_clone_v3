@@ -15,7 +15,7 @@ IGNORE_LIST = ['id', 'updated_at', 'created_at']
 def get_all():
     """Get all states"""
     obj = storage.all(cls)
-    parsed = [v.to_json() for v in obj.values()]
+    parsed = [v.to_dict() for v in obj.values()]
     return jsonify(parsed)
 
 
@@ -29,7 +29,7 @@ def create():
         abort(400 "Missing name")
     obj = cls(**body)
     obj.save()
-    return jsonify(obj.to_json()), 201
+    return jsonify(obj.to_dict()), 201
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
@@ -38,7 +38,7 @@ def get(state_id):
     obj = storage.get(cls, state_id)
     if obj is None:
         abort(404, "Not found")
-    return jsonify(obj.to_json())
+    return jsonify(obj.to_dict())
 
 
 @app_views.route('/states/<state_id>', methods=['DELETE'],
@@ -50,7 +50,7 @@ def delete(state_id):
         abort(404, "Not found")
     obj.delete()
     del obj
-    return jsonify({})
+    return jsonify({}), 200
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
@@ -62,4 +62,4 @@ def update(state_id):
     body = request.get_json()
     if body is None:
         abort(400, "Not a JSON")
-    return jsonify(obj.to_json())
+    return jsonify(obj.to_dict()), 200
