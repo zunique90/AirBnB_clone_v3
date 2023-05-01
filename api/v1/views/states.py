@@ -23,6 +23,8 @@ def create():
     """create a new state"""
     try:
         body = request.get_json()
+        if type(body) is not dict:
+            raise BadRequest()
         if 'name' not in body:
             raise KeyError()
         obj = cls(**body)
