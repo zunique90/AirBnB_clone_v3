@@ -3,6 +3,7 @@
 
 from api.v1.views import app_views
 from models.city import City
+from models.state import State
 from models import storage
 from flask import abort, request
 from werkzeug.exceptions import BadRequest
@@ -10,21 +11,37 @@ from werkzeug.exceptions import BadRequest
 cls = City
 
 
-@app_views.route('/cities', methods=['GET'], strict_slashes=False)
-def get_all_city():
+def state_exists(state_id):
+    """
+    Checks if state exists
+    """
+    return storage.get(State, state_id) is not None
+
+
+@app_views.route('/states/<state_id>/cities', methods=['GET'],
+                 strict_slashes=False)
+def get_all_city(state_id):
     """Gets all cities"""
-    obj = storage.all(cls)
-    return [v.to_dict() for v in obj.values()]
+    if not state_exists(state_id):
+        return abort(404)
+    obj = storage.get(State, state_id)
+    return [v.to_dict() for v in obj.cities]
 
 
-@app_views.route('/cities', methods=['POST'], strict_slashes=False)
-def create_city():
+@app_views.route('/states/<state_id>/cities', methods=['POST'],
+                 strict_slashes=False)
+def create_city(state_id):
     """create a new city"""
+    if not state_exists(state_id):
+        return abort(404)
     try:
         body = request.get_json()
+        if type(body) is not dict:
+            raise BadRequest()
         if 'name' not in body:
             raise KeyError()
         obj = cls(**body)
+        obj.state_id = state_id
         obj.save()
         return obj.to_dict(), 201
     except BadRequest as e:
@@ -60,8 +77,12 @@ def update_city(city_id):
     if obj is None:
         return abort(404)
     try:
-        IGNORE_LIST = ['id', 'updated_at', 'created_at']
+        IGNORE_LIST = ['id', 'state_id', 'updated_at', 'created_at']
         body = request.get_json()
+        if type(body) is not dict:
+            raise BadRequest()
+        if type(body) is not dict:
+            raise BadRequest()
         for key, value in body.items():
             if key in IGNORE_LIST:
                 continue

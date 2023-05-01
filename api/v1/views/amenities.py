@@ -22,6 +22,8 @@ def create_amenity():
     """create a new amenity"""
     try:
         body = request.get_json()
+        if type(body) is not dict:
+            raise BadRequest()
         if 'name' not in body:
             raise KeyError()
         obj = cls(**body)
@@ -65,6 +67,8 @@ def update_amenity(amenity_id):
     try:
         IGNORE_LIST = ['id', 'updated_at', 'created_at']
         body = request.get_json()
+        if type(body) is not dict:
+            raise BadRequest()
         for key, value in body.items():
             if key in IGNORE_LIST:
                 continue
